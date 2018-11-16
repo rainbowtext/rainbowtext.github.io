@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Rainbow Text Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='shortcut icon' href='img/favicon.png'>
+</head>
+<body>
+    <script>
+        /*
+            This applet can be re-used or modified, if credit is given in the source code.
+            Applet Created By Peter Williams, Hex Converter from kouichirou@eto.com
+            None of us will be held responsible for any unwanted effects 
+            due to the usage of this applet or any derivative.  No
+            warrantees for usability in any application are given or implied.
+            
+            Peter Williams, July 7, 1997
+            
+            Color cycle and program / loop structure fixed by Sarah Childers, 1999
+        */
+
+        function rainbow(a, cycles) {
+            colo = new array(3)
+            colo[1] = 255;
+            colo[2] = 0;
+            colo[3] = 0;
+            hexa = new array(16)
+            for (var i = 0; i < 10; i++) {
+                hexa[i] = i;
+            }
+            hexa[10] = "A";
+            hexa[11] = "B";
+            hexa[12] = "C";
+            hexa[13] = "D";
+            hexa[14] = "E";
+            hexa[15] = "F";
+            var letternum = 0;
+            var n = 0;
+            var i = 0;
+            var j = 0;
+            var colnum = 0;
+            var incr = (255 * 6 * cycles) / a.length;
+            incr = Math.ceil(incr);
+            colorText = "";
+
+            for (n = 1; n <= cycles; n++) // repeat with each cycle
+            {
+                for (i = 1; i <= 6; i++) // varying each primary color twice
+                {
+                    for (j = 0; j <= 255; j += incr) // go through the spectrum
+                    {
+                        letternum++;
+                        colorText += colorThis(colo, a.charAt(letternum - 1));
+                        console.log(colorText)
+
+                        if (a.length == letternum) { return colorText; }
+
+                        // calculate next color
+
+                        if (i / 2 == Math.floor(i / 2)) {
+                            colnum = Math.floor(i / 2);
+                            colo[colnum] = colo[colnum] - incr;
+                        }
+                        else {
+                            colnum = Math.ceil(i / 2) + 1;
+                            if (colnum > 3) {
+                                colnum = (colnum - 3);
+                            }
+                            colo[colnum] = colo[colnum] + incr;
+                        }
+                    }
+                }
+            }
+        }
+
+        function array(n) {
+            this.length = n;
+            for (var m = 1; m <= n; m++) {
+                this[m] = 0;
+            }
+        }
+
+        function hex(baseten) {
+            if (baseten < 0)
+                return "00";
+            else if (baseten > 255)
+                return "ff";
+            else
+                return "" + hexa[Math.floor(baseten / 16)] + hexa[baseten % 16];
+        }
+
+        function colorThis(colo, text) {
+            var mytext
+            var color = hex(colo[1]) + hex(colo[2]) + hex(colo[3]);
+            mytext = '<span class="rainbow-letter" style="color:#' + color + ' !important">';
+            mytext += text;
+            mytext += '</span>';
+
+            return mytext;
+        }
+        function createRainbow() {
+            var input = document.getElementById('text-input').value;
+            var output = document.getElementById('text-output');
+            var cycles = document.getElementById('num-cycles').value;
+            
+            if(input==''){
+                output.innerHTML = '';
+                document.getElementById('code-output').value = '';
+                return;
+            }
+            var result = rainbow(input, cycles)
+            if (result) {
+                output.innerHTML = result;
+                document.getElementById('code-output').value = result;
+            }
+        }
+
+        // Sometimes the function returns undefined so we'll 
+        // window.setInterval(function () {
+        //     var input_len = document.getElementById('text-input').value.length;
+        //     var output_len = document.getElementById('text-output').childElementCount;
+        //     if (input_len == output_len) { return; }
+        //     createRainbow();
+        // }, 100);
+    </script>
+<nav>
+    <img src='img/favicon.png' height='40px;'>
+    <span>Rainbow Text Generator</span>
+</nav>
+<div class="split left">
+        <div class="centered">
+            <label># rainbows</label><br/>
+                <input type='text' id='num-cycles' onkeyup="createRainbow()" value='1'>
+                <br/>
+                <textarea id='text-input' onkeyup="createRainbow()" placeholder="Enter your text here"></textarea></td>
+        </div>
+      </div>
+      
+      <div class="split right">
+        <div class="centered">
+                <div id='text-output'></div>
+                <textarea id='code-output'></textarea>
+        </div>
+      </div>    
+      
+</body>
+<style>
+html,body {
+    margin: 0;
+    padding: 0
+}
+body {
+    font-size: 1.5em;
+    font-family: "Sofia Pro Regular", Helvetica, sans-serif;
+}
+nav {
+    padding: 5vw;
+}
+#num-cycles {
+    border: 2px solid black
+}
+#text-input {
+    width: 40vw;
+    height: 50vh;
+    border: 2px solid black;
+    font-family: inherit;
+    font-size: 1em;
+}
+#text-output {
+    max-width: 800px;
+    padding: 10px;
+    background: #eeeeee;
+}
+#code-output {
+    width: 40vw;
+    height: 40vh;
+    border: 2px solid black;
+}
+.split {
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.left {
+    left: 0;
+}
+
+.right {
+    right: 0;
+}
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+span.rainbow-letter {
+    display: inline-block;
+}
+</style>
+</html>
